@@ -4,6 +4,7 @@ clear = lambda: os.system('cls')
 from pygame._sdl2 import *
 from pygame import mixer
 from pygame.locals import *
+import random
 
 mixer.init(devicename='Headset Earphone (HyperX Virtual Surround Sound)') #run de audio.py in cmd voor uw huidige audiodevice
 
@@ -41,6 +42,7 @@ class rogerTheKangaroo :
         write("Roger the Kangaroo has arrived!", 0.08)
     #Base stats
     _strength = 80
+    _lifepoints = 150
     _speed = 60
     _invSpace = 20
     _magicPower = 30
@@ -50,11 +52,64 @@ class rogerTheKangaroo :
 def ultraPunch():
     write("Roger The Kangaroo used his trump card: Ultra Punch!", 0.08)
     time.sleep(2)
-    write("Ultra punch consumed 10 points...", 0.08)
-    rogerTheKangaroo._points -= 10
-    write("You have ", rogerTheKangaroo._points + "left...", 0.08)
+    num2 = 0
+    num2 = random.randrange(1, 11)
+    if num2 == 10:
+        write("Roger The Kangaroo's Ultra Punch was a critical hit! It's damage doubled to 250!")
+        enboss0._lifepoints -= 250
+        rogerTheKangaroo._points -= 30
+        write("Ultra punch consumed 30 points...", 0.08)
+        time.sleep(0.5)
+        write("You have ", rogerTheKangaroo._points + "left...", 0.08)
+
+    else:
+        write("Roger The Kangaroo's Ultra Punch was a solid hit! It did 125 damage!")
+        rogerTheKangaroo._points -=30
+        endboss0._lifepoints -= 125
+        write("Ultra punch consumed 30 points...", 0.08)
+        time.sleep(0.5)
+        write("You have ", rogerTheKangaroo._points + "left...", 0.08)
+
+def upperCut():
+    write("Roger used an upperCut...", 0.08)
+    num0 = 0
+    num0 = random.randrange(1,11)
+    if num0 == 1:
+        write("Roger landed a critical hit! It inflicted 100 damage...", 0.08)
+        Endboss._lifepoints -= 100
+        rogerTheKangaroo._points -=10
+        write("Upper Cut consumed 10 points...", 0.08)
+        time.sleep(0.5)
+        write("You have ", rogerTheKangaroo._points + "left...", 0.08)
+    else:
+        write("Roger landed a solid hit! It inflicted 50 damage...", 0.08)
+        Endboss._lifepoints -= 50
+        write("Upper Cut consumed 10 points...", 0.08)
+        time.sleep(0.5)
+        write("You have ", rogerTheKangaroo._points + "left...", 0.08)
+
+
+
+class Endboss(rogerTheKangaroo) :
+    _strength = 150
+    _lifepoints = 1000
+    _smash = 100
+
+def smash() :
+    write("The Endboss used it's powerfull fist to SMASH!", 0.04)
+    if _smash != 0:
+        if KEYDOWN != K_RIGHT or KEYDOWN != K_LEFT:
+            character0._lifepoints =- 25
+            Endboss._smash -= 25
+    else:
+        write("The endboss tried to use SMASH! Yet it's taken a toll on it's stamina...", 0.08)
+        time.sleep(0.5)
+        write("You have 20 seconds of time before the endboss can fight again...", 0.08)
+        time.sleep(20)
+        _smash = 100
 
 kangaroo0 = rogerTheKangaroo()
+endboss0 = Endboss()
 
 while game:
     KEYS_DOWN = pygame.key.get_pressed()
@@ -62,6 +117,32 @@ while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game = False
+
+    if (KEYS_DOWN[K_SPACE]):
+        if kangaroo0._points < 9:
+            kangaroo0.upperCut()
+        else:
+            write("You dont have enough attack points!", 0.08)
+
+    if (KEYS_DOWN[K_q]):
+        if kangaroo0._points < 29:
+            ultraPunch()
+        else:
+            write("You dont have enough attack points!")
+
+    if endboss0._lifepoints == 0:
+        write("You have defeated the boss! Congratulations!", 0.08)
+        game = False
+
+    num1 = 0
+    num1 = random.randrange(1, 301)
+    if num1 == 300:
+        write("The enboss used smash! Quick dodge!", 0.04)
+        time.sleep(0.3)
+        smash()
+        write("You have gained 10 attack points your current is " + kangaroo0._lifepoints)
+        kangaroo0._lifepoints += 10
+
 
     if (KEYS_DOWN[K_UP]):
         playerRect.y -= playerSpeed
